@@ -41,6 +41,7 @@ public final class InMemoryLedger implements AccountRepository, TransferReposito
     public int pendingVersionConflicts;
     public Transfer transferInsertedConcurrently;
     public final List<LockMode> lockModesUsed = new ArrayList<>();
+    public final List<AccountId> updateOrder = new ArrayList<>();
     private Transfer committedByAnotherTransaction;
 
     // --- TransactionRunner ---
@@ -90,6 +91,7 @@ public final class InMemoryLedger implements AccountRepository, TransferReposito
 
     @Override
     public void update(Account account) {
+        updateOrder.add(account.id());
         Account stored = accounts.get(account.id());
         if (pendingVersionConflicts > 0) {
             pendingVersionConflicts--;

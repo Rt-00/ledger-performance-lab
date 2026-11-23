@@ -185,6 +185,19 @@ class TransferFundsTest {
         }
 
         @Test
+        void accounts_are_always_written_in_id_order_so_opposite_transfers_cannot_deadlock() {
+            TransferFunds transferFunds = useCase(LockMode.OPTIMISTIC);
+            ledger.add(Account.restore(bob, AccountType.CUSTOMER, brl("50.00"), AccountStatus.ACTIVE, 1));
+            AccountId lower = alice.compareTo(bob) < 0 ? alice : bob;
+            AccountId higher = lower.equals(alice) ? bob : alice;
+
+            transferFunds.execute(new TransferOrder(new IdempotencyKey("a-to-b"), alice, bob, brl("1.00")));
+            transferFunds.execute(new TransferOrder(new IdempotencyKey("b-to-a"), bob, alice, brl("1.00")));
+
+            assertThat(ledger.updateOrder).containsExactly(lower, higher, lower, higher);
+        }
+
+        @Test
         void pessimistic_mode_never_retries() {
             ledger.pendingVersionConflicts = 1;
 
