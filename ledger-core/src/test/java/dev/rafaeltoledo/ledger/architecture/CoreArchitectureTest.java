@@ -8,7 +8,7 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 @AnalyzeClasses(packages = "dev.rafaeltoledo.ledger", importOptions = ImportOption.DoNotIncludeTests.class)
-class DomainArchitectureTest {
+class CoreArchitectureTest {
 
     @ArchTest
     static final ArchRule domain_depends_only_on_the_jdk_and_itself = classes()
@@ -16,4 +16,11 @@ class DomainArchitectureTest {
             .should().onlyDependOnClassesThat()
             .resideInAnyPackage("..domain..", "java..")
             .because("the domain model must stay free of frameworks and of the application layer");
+
+    @ArchTest
+    static final ArchRule application_depends_only_on_the_domain_and_the_jdk = classes()
+            .that().resideInAPackage("..application..")
+            .should().onlyDependOnClassesThat()
+            .resideInAnyPackage("..application..", "..domain..", "java..")
+            .because("use cases talk to the outside world only through their ports");
 }
