@@ -14,8 +14,10 @@ import dev.rafaeltoledo.ledger.domain.transfer.FundsTransfer;
 import dev.rafaeltoledo.ledger.domain.transfer.Transfer;
 import dev.rafaeltoledo.ledger.domain.transfer.TransferOrder;
 import java.time.Clock;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Executes a transfer exactly once per idempotency key.
@@ -93,8 +95,10 @@ public final class TransferFunds {
         var executed = fundsTransfer.execute(order, source, target, clock.instant());
 
         transfers.add(executed);
-        accounts.update(source);
-        accounts.update(target);
+        // Writes go in a global order (by id): otherwise A->B and B->A running at the same time
+        // can each hold one row lock while waiting for the other -> deadlock (found by
+        // LedgerConcurrencyTest in optimistic mode).
+        Stream.of(source, target).sorted(Comparator.comparing(Account::id)).forEach(accounts::update);
         outbox.append(executed.completedEvent());
         observer.completed();
         return new TransferResult(executed.transfer(), false);
