@@ -1,0 +1,16 @@
+[versions]
+spring-boot = "4.2.0"
+archunit = "1.5.1"
+jmh = "1.37"
+jmh-plugin = "0.7.4"
+
+[libraries]
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+archunit = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+assertj = { module = "org.assertj:assertj-core" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+jmh = { id = "me.champeau.jmh", version.ref = "jmh-plugin" }
