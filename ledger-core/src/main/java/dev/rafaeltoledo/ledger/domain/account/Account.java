@@ -50,8 +50,13 @@ public final class Account {
     }
 
     public void credit(Money amount) {
-        requireMovable(amount);
+        ensureCanBeCredited(amount);
         balance = balance.plus(amount);
+    }
+
+    /** Validates a future credit without mutating state, so multi-aggregate operations can fail fast. */
+    public void ensureCanBeCredited(Money amount) {
+        requireMovable(amount);
     }
 
     public void block() {
