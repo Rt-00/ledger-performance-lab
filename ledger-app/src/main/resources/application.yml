@@ -1,6 +1,9 @@
 spring:
   application:
     name: ledger
+  rabbitmq:
+    # Lets the outbox relay wait for broker confirms before marking events as published.
+    publisher-confirm-type: simple
   threads:
     virtual:
       enabled: true
@@ -16,3 +19,9 @@ ledger:
   retry:
     max-attempts: 5
     base-backoff: 5ms
+  outbox:
+    relay:
+      enabled: true
+      fixed-delay: 200ms
+      batch-size: 500
+      confirm-timeout: 5s
