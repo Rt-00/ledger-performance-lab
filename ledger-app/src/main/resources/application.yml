@@ -1,12 +1,25 @@
 spring:
   application:
     name: ledger
+  # Defaults match docker-compose.yml so `./gradlew bootRun` works against `docker compose up`.
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ledger
+    username: ledger
+    password: ledger
+  flyway:
+    postgresql:
+      # Flyway's default lock keeps a transaction open, which makes CREATE INDEX CONCURRENTLY
+      # (V2) wait forever on that transaction's virtualxid.
+      transactional-lock: false
   rabbitmq:
     # Lets the outbox relay wait for broker confirms before marking events as published.
     publisher-confirm-type: simple
   threads:
     virtual:
       enabled: true
+
+server:
+  shutdown: graceful
 
 management:
   endpoints:
