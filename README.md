@@ -1,5 +1,7 @@
 # ledger-performance-lab
 
+[![ci](https://github.com/Rt-00/ledger-performance-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/Rt-00/ledger-performance-lab/actions/workflows/ci.yml)
+
 A double-entry ledger (accounts, deposits, transfers, statements) in **Java 21 + Spring Boot 4**,
 built with **DDD and TDD**, and used as a lab to answer performance questions with **measured
 numbers** instead of opinions.
