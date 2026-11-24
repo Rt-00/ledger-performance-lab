@@ -38,3 +38,8 @@ tasks.named<JacocoReport>("jacocoTestReport") {
 tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
     classDirectories.setFrom(files(classDirectories.files.map { fileTree(it) { exclude(coverageExclusions) } }))
 }
+
+// Only the executable Spring Boot jar is needed (keeps the Docker COPY unambiguous).
+tasks.named<Jar>("jar") {
+    enabled = false
+}

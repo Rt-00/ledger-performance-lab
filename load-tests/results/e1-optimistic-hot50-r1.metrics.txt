@@ -1,0 +1,3 @@
+ledger_transfers_total{outcome="completed"} 29724.0
+ledger_transfers_total{outcome="replayed"} 0.0
+ledger_transfers_total{outcome="retried"} 55028.0
